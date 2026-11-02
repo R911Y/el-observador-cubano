@@ -1,0 +1,951 @@
+# 05 · Modelo inicial de base de datos
+
+Borrador de diseño para PostgreSQL + Prisma. **No es código de producción todavía**: se
+validará y ajustará en la Fase 1 al generar la primera migración.
+
+Convenciones:
+
+- Identificadores `cuid()`.
+- Fechas en UTC (`timestamptz`).
+- Correos normalizados a minúsculas; `citext` habilitado en PostgreSQL.
+- Importes en **enteros de centavos** + código de moneda ISO 4217.
+- Borrado lógico solo donde la ley o la moderación lo exijan; el resto usa borrado real
+  con auditoría.
+- Ningún dato personal innecesario. Las IP se guardan como hash con sal del servidor solo
+  cuando hay una finalidad de seguridad.
+
+---
+
+## 1. Diagrama de dominios
+
+```mermaid
+erDiagram
+  USER ||--o{ SESSION : tiene
+  USER ||--o{ ARTICLE_REVISION : edita
+  USER ||--o{ AUDIT_LOG : genera
+  USER ||--o| AUTHOR : "puede ser"
+  AUTHOR ||--o{ ARTICLE : firma
+  ARTICLE ||--o{ ARTICLE_TRANSLATION : traduce
+  ARTICLE ||--o{ ARTICLE_REVISION : versiona
+  ARTICLE }o--|| CATEGORY : clasifica
+  ARTICLE }o--o{ TAG : etiqueta
+  ARTICLE ||--o{ COMMENT : recibe
+  COMMENT ||--o{ COMMENT_REPORT : denuncia
+  MEDIA_ASSET ||--o{ MEDIA_VARIANT : genera
+  ARTICLE }o--o| MEDIA_ASSET : portada
+  RADIO_PROGRAM ||--o{ RADIO_EPISODE : contiene
+  RADIO_EPISODE }o--|| MEDIA_ASSET : audio
+  PRINT_EDITION }o--|| MEDIA_ASSET : pdf
+  SUBSCRIBER ||--o{ CONSENT_RECORD : consiente
+  SUBSCRIBER ||--o{ NEWSLETTER_SEND : recibe
+  NEWSLETTER ||--o{ NEWSLETTER_SEND : envia
+  ADVERTISER ||--o{ AD_CAMPAIGN : contrata
+  AD_CAMPAIGN ||--o{ AD_CREATIVE : usa
+  DONATION }o--|| DONATION_WEBHOOK_EVENT : confirma
+```
+
+---
+
+## 2. Esquema Prisma (borrador)
+
+```prisma
+// ---------------------------------------------------------------
+// Configuración
+// ---------------------------------------------------------------
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------
+// Enumeraciones
+// ---------------------------------------------------------------
+enum Role {
+  OWNER
+  ADMIN
+  EDITOR_IN_CHIEF
+  EDITOR
+  JOURNALIST
+  TRANSLATOR
+  MODERATOR
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DISABLED
+  PENDING
+}
+
+enum ArticleStatus {
+  DRAFT
+  IN_REVIEW
+  APPROVED
+  SCHEDULED
+  PUBLISHED
+  ARCHIVED
+}
+
+enum TranslationStatus {
+  MISSING
+  DRAFT
+  IN_REVIEW
+  APPROVED
+  PUBLISHED
+  OUTDATED
+}
+
+enum CommentsMode {
+  DISABLED
+  PRE_MODERATED
+  POST_MODERATED
+}
+
+enum CommentStatus {
+  PENDING
+  APPROVED
+  HIDDEN
+  DELETED
+  SPAM
+}
+
+enum MediaKind {
+  IMAGE
+  AUDIO
+  VIDEO
+  PDF
+  DOCUMENT
+}
+
+enum PrintEditionStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum NewsletterStatus {
+  DRAFT
+  TEST
+  SCHEDULED
+  SENDING
+  SENT
+  CANCELLED
+}
+
+enum SubscriptionStatus {
+  PENDING
+  CONFIRMED
+  UNSUBSCRIBED
+  BOUNCED
+  COMPLAINED
+  SUPPRESSED
+}
+
+enum SendStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  BOUNCED
+  COMPLAINED
+  FAILED
+}
+
+enum DonationStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+  DISPUTED
+}
+
+enum AdStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  FINISHED
+}
+
+enum AdSlot {
+  HOME_LEADERBOARD
+  HOME_INLINE
+  ARTICLE_TOP
+  ARTICLE_INLINE
+  ARTICLE_END
+  SECTION_TOP
+  NEWSLETTER
+}
+
+enum ImportStatus {
+  PENDING
+  RUNNING
+  PAUSED
+  COMPLETED
+  FAILED
+}
+
+// ---------------------------------------------------------------
+// Identidad y permisos (Better Auth + extensión propia)
+// ---------------------------------------------------------------
+model User {
+  id            String     @id @default(cuid())
+  name          String
+  email         String     @unique @db.Citext
+  emailVerified Boolean    @default(false)
+  image         String?
+  role          Role       @default(JOURNALIST)
+  status        UserStatus @default(ACTIVE)
+  mfaEnabled    Boolean    @default(false)
+  lastLoginAt   DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  sessions   Session[]
+  accounts   Account[]
+  twoFactors TwoFactor[]
+  passkeys   Passkey[]
+  author     Author?
+  revisions  ArticleRevision[]
+  auditLogs  AuditLog[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  ipAddress String?  // hash, nunca IP completa
+  userAgent String?  // truncado
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  userId                String
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?   // hash gestionado por Better Auth
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+}
+
+model TwoFactor {
+  id          String   @id @default(cuid())
+  userId      String
+  secret      String   // cifrado en reposo, nunca en claro
+  backupCodes String   // hashes separados por línea
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Passkey {
+  id           String   @id @default(cuid())
+  userId       String
+  credentialId String   @unique
+  publicKey    String
+  counter      Int      @default(0)
+  transports   String?
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// Perfil público, separado de la cuenta de acceso.
+// Permite colaboradores sin usuario y seudónimos.
+model Author {
+  id            String    @id @default(cuid())
+  userId        String?   @unique
+  slug          String    @unique
+  displayName   String
+  bio           String?   @db.Text
+  avatarMediaId String?
+  isPseudonym   Boolean   @default(false)
+  isPublic      Boolean   @default(true)
+  contactEmail  String?   // cifrado; nunca se expone
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user     User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  articles Article[]
+
+  @@index([isPublic])
+}
+
+// ---------------------------------------------------------------
+// Taxonomía
+// ---------------------------------------------------------------
+model Category {
+  id         String   @id @default(cuid())
+  parentId   String?
+  key        String   @unique // identificador estable, no visible
+  sortOrder  Int      @default(0)
+  isActive   Boolean  @default(true)
+  showInNav  Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  parent       Category?            @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children     Category[]           @relation("CategoryTree")
+  translations CategoryTranslation[]
+  articles     Article[]
+}
+
+model CategoryTranslation {
+  id             String  @id @default(cuid())
+  categoryId     String
+  locale         String  // "es", "en"
+  name           String
+  slug           String
+  description    String? @db.Text
+  seoTitle       String?
+  seoDescription String?
+
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([categoryId, locale])
+  @@unique([locale, slug])
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  createdAt DateTime @default(now())
+  translations TagTranslation[]
+  articles  ArticleTag[]
+}
+
+model TagTranslation {
+  id   String @id @default(cuid())
+  tagId String
+  locale String
+  name String
+  slug String
+
+  tag Tag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([tagId, locale])
+  @@unique([locale, slug])
+}
+
+model ArticleTag {
+  articleId String
+  tagId     String
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, tagId])
+  @@index([tagId])
+}
+
+// ---------------------------------------------------------------
+// Artículos, traducciones y versiones
+// ---------------------------------------------------------------
+model Article {
+  id             String        @id @default(cuid())
+  status         ArticleStatus @default(DRAFT)
+  primaryLocale  String        @default("es")
+  authorId       String
+  categoryId     String
+  heroMediaId    String?
+  isFeatured     Boolean       @default(false)
+  isBreaking     Boolean       @default(false)
+  featuredRank   Int           @default(0)
+  commentsMode   CommentsMode  @default(PRE_MODERATED)
+  readingMinutes Int           @default(1)
+  sourceNote     String?       @db.Text // atribución de fuentes, uso interno
+  publishedAt    DateTime?
+  scheduledFor   DateTime?
+  createdById    String
+  updatedById    String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  archivedAt     DateTime?
+
+  author       Author               @relation(fields: [authorId], references: [id])
+  category     Category             @relation(fields: [categoryId], references: [id])
+  heroMedia    MediaAsset?          @relation("ArticleHero", fields: [heroMediaId], references: [id], onDelete: SetNull)
+  translations ArticleTranslation[]
+  revisions    ArticleRevision[]
+  tags         ArticleTag[]
+  comments     Comment[]
+
+  @@index([status, publishedAt])
+  @@index([categoryId, publishedAt])
+  @@index([authorId])
+  @@index([scheduledFor])
+}
+
+model ArticleTranslation {
+  id             String            @id @default(cuid())
+  articleId      String
+  locale         String
+  title          String            @db.Text
+  slug           String
+  excerpt        String            @db.Text
+  bodyJson       Json              // documento TipTap
+  bodyHtml       String            @db.Text // renderizado y saneado en servidor
+  seoTitle       String?
+  seoDescription String?
+  canonicalUrl   String?
+  status         TranslationStatus @default(DRAFT)
+  translatorId   String?
+  reviewerId     String?
+  publishedAt    DateTime?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@unique([articleId, locale])
+  @@unique([locale, slug])
+  @@index([locale, status, publishedAt])
+}
+
+model ArticleRevision {
+  id        String   @id @default(cuid())
+  articleId String
+  locale    String
+  title     String   @db.Text
+  snapshot  Json     // título, extracto, cuerpo, metadatos, relaciones
+  note      String?
+  editorId  String
+  createdAt DateTime @default(now())
+
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  editor  User    @relation(fields: [editorId], references: [id])
+
+  @@index([articleId, createdAt])
+}
+
+// Páginas institucionales y legales, independientes de las noticias.
+model Page {
+  id          String    @id @default(cuid())
+  key         String    @unique // "about", "privacy", "corrections"…
+  isPublished Boolean   @default(false)
+  requiresLegalReview Boolean @default(false)
+  updatedById String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  translations PageTranslation[]
+  revisions   PageRevision[]
+}
+
+model PageTranslation {
+  id             String   @id @default(cuid())
+  pageId         String
+  locale         String
+  title          String
+  slug           String
+  bodyJson       Json
+  bodyHtml       String   @db.Text
+  seoTitle       String?
+  seoDescription String?
+  publishedAt    DateTime?
+  updatedAt      DateTime @updatedAt
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@unique([pageId, locale])
+  @@unique([locale, slug])
+}
+
+model PageRevision {
+  id        String   @id @default(cuid())
+  pageId    String
+  locale    String
+  snapshot  Json
+  editorId  String
+  createdAt DateTime @default(now())
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId, createdAt])
+}
+
+// ---------------------------------------------------------------
+// Medios
+// ---------------------------------------------------------------
+model MediaAsset {
+  id             String    @id @default(cuid())
+  kind           MediaKind
+  key            String    @unique // objeto en R2
+  mimeType       String
+  bytes          Int
+  width          Int?
+  height         Int?
+  durationSeconds Int?
+  checksum       String    @unique
+  altJson        Json?     // { "es": "...", "en": "..." }
+  captionJson    Json?
+  credit         String?
+  license        String?
+  sourceUrl      String?
+  exifStripped   Boolean   @default(true)
+  focalX         Float?    @default(0.5)
+  focalY         Float?    @default(0.5)
+  uploadedById   String?
+  createdAt      DateTime  @default(now())
+  deletedAt      DateTime?
+
+  variants     MediaVariant[]
+  articleHero  Article[]      @relation("ArticleHero")
+  radioCovers  RadioProgram[]
+  radioAudios  RadioEpisode[]
+  printCovers  PrintEdition[] @relation("PrintCover")
+  printPdfs    PrintEdition[] @relation("PrintPdf")
+
+  @@index([kind])
+}
+
+model MediaVariant {
+  id       String @id @default(cuid())
+  assetId  String
+  format   String // avif, webp, jpeg
+  width    Int
+  key      String @unique
+  bytes    Int
+
+  asset MediaAsset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@unique([assetId, format, width])
+}
+
+// ---------------------------------------------------------------
+// Comentarios y moderación
+// ---------------------------------------------------------------
+model Comment {
+  id             String        @id @default(cuid())
+  articleId      String
+  userId         String?
+  authorName     String
+  authorEmailHash String?      // hash con sal; nunca el correo en claro
+  body           String        @db.Text
+  status         CommentStatus @default(PENDING)
+  parentId       String?
+  ipHash         String?
+  userAgentHash  String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  moderatedById  String?
+  moderatedAt    DateTime?
+  moderationNote String?
+  reportCount    Int           @default(0)
+
+  article  Article         @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  parent   Comment?        @relation("CommentTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children Comment[]       @relation("CommentTree")
+  reports  CommentReport[]
+
+  @@index([articleId, status, createdAt])
+}
+
+model CommentReport {
+  id           String   @id @default(cuid())
+  commentId    String
+  reason       String
+  details      String?  @db.Text
+  reporterHash String?  // evita cuentas duplicadas sin identificar al lector
+  status       String   @default("OPEN")
+  createdAt    DateTime @default(now())
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@index([commentId, status])
+}
+
+// ---------------------------------------------------------------
+// Newsletter
+// ---------------------------------------------------------------
+model Subscriber {
+  id             String             @id @default(cuid())
+  email          String             @unique @db.Citext
+  locale         String             @default("es")
+  status         SubscriptionStatus @default(PENDING)
+  source         String?            // home, article, /suscripcion…
+  consentVersion String
+  confirmedAt    DateTime?
+  unsubscribedAt DateTime?
+  bounceCount    Int                @default(0)
+  complainedAt   DateTime?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  consents ConsentRecord[]
+  sends    NewsletterSend[]
+
+  @@index([status, locale])
+}
+
+model ConsentRecord {
+  id          String   @id @default(cuid())
+  subscriberId String
+  type        String   // "newsletter_double_opt_in"
+  version     String
+  grantedAt   DateTime @default(now())
+  revokedAt   DateTime?
+  ipHash      String?
+  evidence    String?  @db.Text // user-agent truncado, origen, etc.
+
+  subscriber Subscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+
+  @@index([subscriberId, grantedAt])
+}
+
+model Suppression {
+  id        String   @id @default(cuid())
+  emailHash String   @unique
+  reason    String   // unsubscribe, bounce, complaint, manual
+  createdAt DateTime @default(now())
+}
+
+model Newsletter {
+  id             String           @id @default(cuid())
+  subject        String
+  preheader      String?
+  bodyJson       Json
+  bodyHtml       String           @db.Text
+  locale         String
+  status         NewsletterStatus @default(DRAFT)
+  scheduledFor   DateTime?
+  sentAt         DateTime?
+  audienceFilter Json?
+  createdById    String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  sends NewsletterSend[]
+
+  @@index([status, scheduledFor])
+}
+
+model NewsletterSend {
+  id                String     @id @default(cuid())
+  newsletterId      String
+  subscriberId      String
+  status            SendStatus @default(QUEUED)
+  providerMessageId String?
+  sentAt            DateTime?
+  deliveredAt       DateTime?
+  bouncedAt         DateTime?
+  complainedAt      DateTime?
+
+  newsletter Newsletter @relation(fields: [newsletterId], references: [id], onDelete: Cascade)
+  subscriber Subscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+
+  @@unique([newsletterId, subscriberId])
+  @@index([status])
+}
+```
+
+---
+
+## 3. Radio y edición impresa
+
+```prisma
+model RadioProgram {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  title        String
+  description  String?  @db.Text
+  coverMediaId String?
+  hosts        String[] // nombres públicos; sin datos privados
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  cover    MediaAsset?    @relation(fields: [coverMediaId], references: [id], onDelete: SetNull)
+  episodes RadioEpisode[]
+}
+
+model RadioEpisode {
+  id              String    @id @default(cuid())
+  programId       String
+  slug            String
+  title           String
+  description     String?   @db.Text
+  audioMediaId    String
+  durationSeconds Int
+  publishedAt     DateTime?
+  transcript      String?   @db.Text
+  downloadAllowed Boolean   @default(false)
+  season          Int?
+  episodeNumber   Int?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  program RadioProgram @relation(fields: [programId], references: [id], onDelete: Cascade)
+  audio   MediaAsset   @relation(fields: [audioMediaId], references: [id])
+
+  @@unique([programId, slug])
+  @@index([publishedAt])
+}
+
+model PrintEdition {
+  id           String             @id @default(cuid())
+  number       Int                @unique
+  slug         String             @unique
+  title        String
+  description  String?            @db.Text
+  publishedAt  DateTime?
+  coverMediaId String?
+  pdfMediaId   String?
+  locale       String             @default("es")
+  pages        Int?
+  sizeBytes    Int?
+  checksum     String?
+  status       PrintEditionStatus @default(DRAFT)
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  cover MediaAsset? @relation("PrintCover", fields: [coverMediaId], references: [id], onDelete: SetNull)
+  pdf   MediaAsset? @relation("PrintPdf", fields: [pdfMediaId], references: [id], onDelete: SetNull)
+
+  @@index([status, publishedAt])
+}
+
+model DownloadDaily {
+  id        String   @id @default(cuid())
+  editionId String
+  date      DateTime @db.Date
+  count     Int      @default(0)
+
+  @@unique([editionId, date])
+}
+```
+
+---
+
+## 4. Donaciones y publicidad
+
+```prisma
+model Donation {
+  id             String         @id @default(cuid())
+  provider       String         // "stripe", "donorbox"…
+  externalId     String         @unique
+  idempotencyKey String?        @unique
+  amountCents    Int
+  currency       String         @db.Char(3)
+  status         DonationStatus @default(PENDING)
+  donorName      String?
+  donorEmailHash String?
+  message        String?        @db.Text
+  receiptUrl     String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model DonationWebhookEvent {
+  id          String    @id @default(cuid())
+  provider    String
+  eventId     String    @unique
+  payloadHash String
+  status      String    @default("received")
+  processedAt DateTime?
+  createdAt   DateTime  @default(now())
+}
+
+model Advertiser {
+  id        String   @id @default(cuid())
+  name      String
+  contact   String?  // cifrado o referencia interna
+  notes     String?  @db.Text
+  createdAt DateTime @default(now())
+
+  campaigns AdCampaign[]
+}
+
+model AdCampaign {
+  id           String   @id @default(cuid())
+  advertiserId String
+  name         String
+  startsAt     DateTime
+  endsAt       DateTime
+  status       AdStatus @default(DRAFT)
+  createdAt    DateTime @default(now())
+
+  advertiser Advertiser  @relation(fields: [advertiserId], references: [id], onDelete: Cascade)
+  creatives  AdCreative[]
+
+  @@index([status, startsAt, endsAt])
+}
+
+model AdCreative {
+  id         String   @id @default(cuid())
+  campaignId String
+  label      String   // "PUBLICIDAD" o "CONTENIDO PATROCINADO"
+  mediaId    String
+  targetUrl  String   // validada: https, sin javascript:
+  slot       AdSlot
+  isActive   Boolean  @default(true)
+
+  campaign AdCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  media    MediaAsset  @relation(fields: [mediaId], references: [id])
+
+  @@index([slot, isActive])
+}
+
+model AdEventDaily {
+  id         String   @id @default(cuid())
+  creativeId String
+  date       DateTime @db.Date
+  impressions Int     @default(0)
+  clicks      Int     @default(0)
+
+  @@unique([creativeId, date])
+}
+```
+
+> Nota: `AdCreative.media` requiere la relación inversa correspondiente en `MediaAsset`
+> (`adCreatives AdCreative[]`), que se añadirá al validar el esquema en la Fase 1.
+
+---
+
+## 5. Analítica, auditoría y operación
+
+```prisma
+model PageViewDaily {
+  id            String   @id @default(cuid())
+  date          DateTime @db.Date
+  path          String
+  locale        String
+  deviceClass   String   // mobile, tablet, desktop, other
+  referrerGroup String   // direct, search, social, internal, other
+  count         Int      @default(0)
+
+  @@unique([date, path, locale, deviceClass, referrerGroup])
+  @@index([date])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorId     String?
+  action      String   // "article.publish", "user.role_change"…
+  entityType  String
+  entityId    String?
+  ipHash      String?
+  userAgentHash String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([entityType, entityId])
+}
+
+model Setting {
+  key         String   @id
+  value       Json
+  updatedAt   DateTime @updatedAt
+  updatedById String?
+}
+
+model Redirect {
+  id         String   @id @default(cuid())
+  fromPath   String   @unique
+  toPath     String
+  statusCode Int      @default(301)
+  locale     String?
+  note       String?
+  createdAt  DateTime @default(now())
+}
+
+model ImportJob {
+  id         String       @id @default(cuid())
+  source     String       // "blogger-xml"
+  status     ImportStatus @default(PENDING)
+  stats      Json?
+  createdById String?
+  startedAt  DateTime?
+  finishedAt DateTime?
+  createdAt  DateTime     @default(now())
+
+  items ImportItem[]
+}
+
+model ImportItem {
+  id         String       @id @default(cuid())
+  jobId      String
+  sourceId   String?
+  sourceUrl  String?
+  targetType String?
+  targetId   String?
+  status     ImportStatus @default(PENDING)
+  message    String?      @db.Text
+  checksum   String?
+
+  job ImportJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId, status])
+  @@unique([jobId, sourceId])
+}
+```
+
+---
+
+## 6. Reglas de integridad y negocio
+
+1. **Un artículo no se publica sin traducción publicada en su idioma principal.**
+2. `slug` es único por idioma; al cambiarlo se crea una `Redirect`.
+3. Un artículo archivado conserva sus traducciones y comentarios, pero deja de listarse.
+4. `publishedAt` no puede ser futuro si el estado es `PUBLISHED`; si es `SCHEDULED`, se
+   exige `scheduledFor`.
+5. Las revisiones son inmutables; se crean en cada guardado relevante y antes de publicar.
+6. `Subscriber.email` se normaliza; existe además `Suppression.emailHash` para bloquear
+   altas de direcciones dadas de baja.
+7. Nunca se envía un boletín a un suscriptor que no esté `CONFIRMED`.
+8. `Donation.externalId` y `DonationWebhookEvent.eventId` son únicos: la idempotencia se
+   garantiza en base de datos, no solo en código.
+9. `AdCreative` solo admite imagen + URL; no hay campos para HTML o JavaScript.
+10. `Page.requiresLegalReview` bloquea la publicación hasta que un revisor lo marque.
+11. `AuditLog` no se actualiza ni se borra desde la aplicación.
+12. `MediaAsset.checksum` evita duplicados y permite verificar la integridad de las copias.
+
+---
+
+## 7. Retención
+
+| Dato | Retención |
+|---|---|
+| Analítica agregada | 24 meses |
+| Registros de auditoría | 24 meses |
+| Sesiones | 30 días (rotación al iniciar sesión) |
+| Logs técnicos | 30 días, sin PII |
+| Comentarios | Mientras el artículo esté publicado; borrado lógico si se elimina |
+| Consentimientos de suscriptores | 5 años desde la baja (prueba legal) |
+| Datos de donaciones | 7 años (obligaciones fiscales), sin datos de tarjeta |
+| Copias de seguridad | 30 días rodantes + 12 mensuales |
+| Webhooks de pago | 24 meses |
+
+Estos plazos son propuestas sujetas a revisión legal según el país de la entidad.

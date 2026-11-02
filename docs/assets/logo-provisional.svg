@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 220" role="img" aria-labelledby="t d">
+  <title id="t">El Observador Cubano — logotipo provisional</title>
+  <desc id="d">Boceto tipográfico: regla roja vertical, nombre EL OBSERVADOR, CUBANO en rojo espaciado y el lema Periodismo desde las comunidades.</desc>
+  <rect width="760" height="220" fill="none"/>
+  <rect x="40" y="46" width="4" height="128" fill="#A62932"/>
+  <text x="66" y="104" font-family="Georgia, 'Times New Roman', serif" font-size="58" font-weight="600" letter-spacing="0.5" fill="#171A1D">EL OBSERVADOR</text>
+  <text x="68" y="146" font-family="Georgia, 'Times New Roman', serif" font-size="26" letter-spacing="10" fill="#A62932">CUBANO</text>
+  <text x="68" y="178" font-family="Inter, Arial, sans-serif" font-size="10.5" letter-spacing="2.4" fill="#5F666D">PERIODISMO DESDE LAS COMUNIDADES</text>
+  <g transform="translate(656 62)">
+    <rect width="64" height="64" fill="none" stroke="#171A1D" stroke-width="2"/>
+    <rect x="0" y="0" width="8" height="64" fill="#A62932"/>
+    <text x="38" y="43" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="26" font-weight="600" fill="#171A1D">OC</text>
+  </g>
+</svg>
