@@ -1,0 +1,182 @@
+{
+  "metadata": {
+    "siteName": "El Observador Cubano",
+    "tagline": "Periodismo desde las comunidades",
+    "description": "Periódico digital sobre Cuba y sus comunidades. Investigación, reportajes y análisis con revisión editorial."
+  },
+  "common": {
+    "skipToContent": "Saltar al contenido",
+    "menu": "Menú",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "search": "Buscar",
+    "searchPlaceholder": "Buscar en el periódico",
+    "searchSubmit": "Buscar",
+    "theme": "Tema",
+    "themeLight": "Cambiar a tema claro",
+    "themeDark": "Cambiar a tema oscuro",
+    "language": "Idioma",
+    "spanish": "Español",
+    "english": "English",
+    "draft": "Borrador",
+    "comingSoon": "Disponible próximamente",
+    "backHome": "Volver a la portada",
+    "all": "Ver todo",
+    "section": "Sección",
+    "externalLink": "Abre en una pestaña nueva"
+  },
+  "nav": {
+    "home": "Inicio",
+    "latest": "Últimas",
+    "more": "Más",
+    "radio": "Radio",
+    "print": "Impreso",
+    "about": "Acerca",
+    "menuTitle": "Secciones",
+    "legal": "Información legal",
+    "follow": "Seguir"
+  },
+  "sections": {
+    "nacional": {
+      "name": "Nacional",
+      "description": "Noticias de Cuba y su vida pública, con verificación y contexto."
+    },
+    "internacional": {
+      "name": "Internacional",
+      "description": "Lo que ocurre fuera de Cuba y cómo afecta a sus comunidades."
+    },
+    "comunidades": {
+      "name": "Comunidades",
+      "description": "Historias y voces de los territorios, dentro y fuera de la isla."
+    },
+    "sociedad": {
+      "name": "Sociedad",
+      "description": "Vida cotidiana, derechos, salud, educación y migración."
+    },
+    "economia": {
+      "name": "Economía",
+      "description": "Trabajo, precios, servicios y economía familiar."
+    },
+    "politica": {
+      "name": "Política",
+      "description": "Decisiones públicas, instituciones y participación ciudadana."
+    },
+    "cultura": {
+      "name": "Cultura",
+      "description": "Arte, música, libros y memoria cultural."
+    },
+    "opinion": {
+      "name": "Opinión",
+      "description": "Análisis y columnas firmadas, separadas de la información."
+    },
+    "reportajes": {
+      "name": "Reportajes",
+      "description": "Investigaciones y relatos de largo aliento."
+    },
+    "entrevistas": {
+      "name": "Entrevistas",
+      "description": "Conversaciones con personas que explican su tiempo."
+    },
+    "comunicados": {
+      "name": "Comunicados",
+      "description": "Declaraciones y posicionamientos del medio."
+    }
+  },
+  "home": {
+    "kicker": "Edición inaugural",
+    "leadTitle": "La redacción está en marcha",
+    "leadBody": "Estamos preparando la primera edición con el mismo criterio que guiará todo el periódico: verificar antes de publicar, atribuir cada dato y corregir a la vista de todos.",
+    "leadNote": "Mientras no exista contenido verificado, esta portada no muestra noticias de relleno ni textos de ejemplo presentados como reales.",
+    "latestTitle": "Últimas",
+    "latestEmpty": "Aún no hay publicaciones. La primera noticia verificada aparecerá aquí.",
+    "noteEmpty": "La portada se completará con noticias verificadas y fechadas. No se usarán textos de ejemplo como si fueran reales.",
+    "sectionsTitle": "Secciones",
+    "sectionsIntro": "La estructura editorial está definida. Cada sección se activará cuando tenga contenido propio.",
+    "radioTitle": "Radio",
+    "radioBody": "El archivo sonoro se incorporará cuando existan episodios y transcripciones autorizadas.",
+    "radioEmpty": "Todavía no hay episodios disponibles.",
+    "printTitle": "Edición impresa",
+    "printBody": "La hemeroteca digital mostrará cada edición con su portada, metadatos y enlace de descarga.",
+    "printEmpty": "Todavía no hay ediciones disponibles.",
+    "newsletterTitle": "Boletín",
+    "newsletterBody": "El boletín se activará cuando estén configurados el envío de correo y la doble confirmación de altas. No se recogerán direcciones antes de esa revisión.",
+    "legalNotice": "Sitio en desarrollo. Los textos legales son borradores y requieren revisión profesional."
+  },
+  "section": {
+    "emptyTitle": "Esta sección aún no tiene publicaciones",
+    "emptyBody": "Cuando la redacción publique contenido verificado en esta sección, aparecerá aquí con su fecha, firma y etiquetas.",
+    "pageLabel": "Sección"
+  },
+  "search": {
+    "title": "Buscar",
+    "description": "Buscar en las publicaciones del periódico.",
+    "label": "Término de búsqueda",
+    "placeholder": "Palabra o frase",
+    "submit": "Buscar",
+    "emptyTitle": "La búsqueda estará disponible con el primer contenido",
+    "emptyBody": "El índice de búsqueda se activará cuando existan artículos publicados y revisados.",
+    "queryLabel": "Resultados para «{query}»"
+  },
+  "about": {
+    "title": "Acerca del periódico",
+    "description": "Información institucional de El Observador Cubano.",
+    "introTitle": "Un proyecto editorial en construcción",
+    "introBody": "El Observador Cubano nace como una sede digital para el periodismo de comunidad: información verificada, contexto y voz para quienes viven dentro y fuera de la isla.",
+    "placeholderTitle": "Contenido institucional pendiente",
+    "placeholderBody": "Esta página reunirá la información verificada de la dirección editorial, el equipo y la misión del medio. No se publicarán nombres, cargos ni biografías hasta contar con su autorización.",
+    "principlesTitle": "Principios de trabajo",
+    "principles": {
+      "accuracy": "Verificación previa y atribución de fuentes.",
+      "independence": "Separación entre información, opinión y publicidad.",
+      "corrections": "Correcciones visibles y fechadas.",
+      "privacy": "Minimización de datos y protección de fuentes."
+    }
+  },
+  "radio": {
+    "title": "Radio",
+    "description": "Programas y episodios de audio de El Observador Cubano.",
+    "emptyTitle": "Todavía no hay audio disponible",
+    "emptyBody": "Los reproductores se activarán cuando existan programas, episodios y transcripciones revisadas. Ningún audio se reproducirá de forma automática."
+  },
+  "print": {
+    "title": "Edición impresa",
+    "description": "Hemeroteca digital de ediciones impresas.",
+    "emptyTitle": "Todavía no hay ediciones",
+    "emptyBody": "Cada edición futura mostrará su número, fecha, número de páginas, tamaño del archivo y un enlace de descarga verificada."
+  },
+  "privacy": {
+    "title": "Privacidad",
+    "description": "Borrador de la política de privacidad.",
+    "draftTitle": "Borrador para revisión legal",
+    "draftBody": "Este texto es una base de trabajo. No debe considerarse una política definitiva hasta que sea revisada por asesoría legal competente y publicada con su fecha de vigencia.",
+    "principlesTitle": "Criterios previstos",
+    "principles": {
+      "minimal": "Recogemos solo los datos necesarios para cada finalidad.",
+      "analytics": "La analítica prevista es agregada y sin cookies de seguimiento.",
+      "rights": "Se documentarán los canales para acceder, corregir y eliminar datos.",
+      "retention": "Los plazos de conservación se publicarán junto con la política final."
+    },
+    "pending": "La versión completa se incorporará antes de abrir el registro de suscriptores o cualquier formulario que trate datos personales."
+  },
+  "footer": {
+    "about": "Acerca",
+    "privacy": "Privacidad",
+    "contact": "Contacto",
+    "follow": "Seguir el canal",
+    "navigation": "Navegación",
+    "institutional": "Institucional",
+    "draftNotice": "Sitio en desarrollo. Textos legales en borrador.",
+    "rights": "© {year} El Observador Cubano. Todos los derechos reservados.",
+    "builtWith": "Publicado con Next.js"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "La página que buscas no existe o cambió de dirección.",
+    "body": "Comprueba la dirección o vuelve a la portada. Si llegaste desde un enlace antiguo, la redirección correspondiente se añadirá durante la migración.",
+    "backHome": "Volver a la portada"
+  },
+  "errors": {
+    "genericTitle": "Algo salió mal",
+    "genericBody": "No pudimos completar la operación. Inténtalo de nuevo en unos minutos."
+  }
+}

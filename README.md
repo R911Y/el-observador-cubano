@@ -1,64 +1,192 @@
-# El Observador Cubano — Plataforma editorial
+# El Observador Cubano
 
 **Periodismo desde las comunidades**
 
-Repositorio de la futura sede digital de *El Observador Cubano*.
+Repositorio de la sede digital de *El Observador Cubano*: un periódico multilingüe (español/inglés)
+con verificación editorial, privacidad por defecto y protección de fuentes.
 
-## Estado actual
+> **Estado:** Fase 0 aprobada. Fase 1 (fundación) implementada y verificada en local. No hay
+> despliegue, base de datos ni contenido migrado todavía.
+> Ver [`docs/13-fase-1-fundacion.md`](docs/13-fase-1-fundacion.md).
 
-**FASE 0 — Investigación y planificación (en revisión).**
+---
 
-Todavía no se ha escrito código de la plataforma. Esta fase produce el diagnóstico de las
-fuentes actuales (Blogger y WhatsApp), el inventario real de contenidos, la arquitectura
-propuesta, el modelo de datos, el mapa de páginas, la propuesta visual, los planes de
-seguridad, migración y desarrollo, y la estimación de costes.
+## Qué funciona hoy
 
-La Fase 1 no comienza hasta que el propietario apruebe el paquete y resuelva las decisiones
-pendientes listadas en [`docs/00-informe-fase-0.md`](docs/00-informe-fase-0.md).
+- Next.js 16 con App Router, React 19, TypeScript estricto y Tailwind 4.
+- Rutas localizadas reales: `/es/nacional`, `/en/national`, `/es/ultimas`, `/en/latest`.
+- Portada, 11 secciones, últimas, búsqueda, acerca, radio, edición impresa y privacidad, con estados
+  vacíos explícitos.
+- Sistema de diseño con tokens, tipografías Newsreader/Inter, tema claro/oscuro, menú móvil accesible
+  y selector de idioma que conserva la página.
+- Cabeceras de seguridad y CSP en modo informe.
+- Prisma 7 con 43 modelos y migración inicial (aún no aplicada).
+- Better Auth configurado con MFA y RBAC de 7 roles y 17 permisos.
+- 16 pruebas unitarias, 3 pruebas E2E y build de 41 páginas estáticas.
 
-## Entregables de la Fase 0
+**Lo que no funciona todavía:** inicio de sesión real, MFA, creación de usuarios, migraciones contra
+PostgreSQL, subidas, boletín, comentarios y despliegue. Nada de eso se presenta como terminado.
+
+---
+
+## Requisitos
+
+- Node.js **24** o superior y npm 11.
+- PostgreSQL 16+ para datos, migraciones y autenticación (opcional para compilar).
+- Git.
+
+No se necesita Docker para compilar, pero sí una base de datos para probar la capa de datos.
+
+---
+
+## Puesta en marcha
+
+```bash
+npm ci
+cp .env.example .env
+# Edita .env: DATABASE_URL, BETTER_AUTH_SECRET, BETTER_AUTH_URL y NEXT_PUBLIC_SITE_URL
+
+npm run db:generate
+npm run db:migrate   # requiere PostgreSQL
+npm run dev
+```
+
+Sin base de datos:
+
+```bash
+npm run build        # funciona
+npm run start        # sirve el sitio
+# /api/health responde 503 y las rutas de auth no pueden operar
+```
+
+Generar el secreto de Better Auth:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
+```
+
+La CLI de Prisma lee `.env`; Next.js lee `.env` y `.env.local`. Nunca se commitea `.env`.
+
+---
+
+## Scripts
+
+| Comando | Qué hace |
+|---|---|
+| `npm run dev` | Servidor de desarrollo |
+| `npm run build` | `prisma generate` + build de producción |
+| `npm run start` | Sirve el build |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | Genera tipos de rutas y comprueba TypeScript |
+| `npm run test` | Pruebas unitarias con Vitest |
+| `npm run test:watch` | Vitest en modo vigilancia |
+| `npm run test:e2e` | Playwright |
+| `npm run check` | Lint + tipos + pruebas unitarias |
+| `npm run db:generate` | Genera el cliente Prisma |
+| `npm run db:validate` | Valida el esquema |
+| `npm run db:migrate` | Crea y aplica migraciones en local |
+| `npm run db:deploy` | Aplica migraciones pendientes |
+| `npm run db:status` | Estado de migraciones |
+| `npm run db:studio` | Explorador de datos |
+
+En este equipo el CDN de Playwright está bloqueado. Para usar Edge instalado:
+
+```powershell
+$env:PLAYWRIGHT_CHANNEL = "msedge"
+npm run test:e2e
+```
+
+En CI se instala Chromium automáticamente.
+
+---
+
+## Estructura
+
+```text
+src/
+├── app/[locale]/        # páginas públicas localizadas
+├── app/api/             # auth y health
+├── components/          # ui, layout y editorial
+├── i18n/                # routing, request y mensajes es/en
+├── lib/                 # auth, db, rbac, rutas, utilidades
+├── styles/              # tokens y estilos globales
+└── proxy.ts             # middleware de next-intl (Next 16)
+
+prisma/                  # esquema y migraciones
+tests/                   # unitarias y E2E
+docs/                    # investigación, planes e informes
+```
+
+La separación por módulos de dominio (`modules/articles`, `modules/users`, etc.) llega en las fases
+2–3. La estructura actual es deliberadamente pequeña y verificable.
+
+---
+
+## Documentación
 
 | Documento | Contenido |
-|-----------|-----------|
-| [00 · Informe de fase](docs/00-informe-fase-0.md) | Resumen ejecutivo, hallazgos, decisiones y puerta de aprobación |
-| [01 · Análisis de Blogspot](docs/01-analisis-blogspot.md) | Identidad, estructura, SEO, rendimiento, accesibilidad y problemas detectados |
-| [02 · Análisis de WhatsApp](docs/02-analisis-whatsapp.md) | Qué se pudo verificar del canal y qué falta |
-| [03 · Inventario de contenidos](docs/03-inventario-contenidos.md) | 34 entradas y 14 páginas analizadas; tipos, etiquetas, autores y activos |
-| [04 · Arquitectura técnica](docs/04-arquitectura-tecnica.md) | Stack, módulos, integraciones, entornos y decisiones |
-| [05 · Modelo de datos](docs/05-modelo-datos.md) | Borrador Prisma, entidades, relaciones y reglas |
-| [06 · Mapa de páginas](docs/06-mapa-paginas.md) | Rutas públicas, administración, API y estrategia de renderizado |
-| [07 · Propuesta visual](docs/07-propuesta-visual.md) | Identidad, paleta validada, tipografía, componentes y plantillas |
-| [08 · Plan de seguridad](docs/08-plan-seguridad.md) | Modelo de amenazas, controles, cabeceras, retención e incidentes |
-| [09 · Plan de migración](docs/09-plan-migracion.md) | Importación de Blogger, imágenes, PDF, redirecciones y verificación |
-| [10 · Plan de desarrollo](docs/10-plan-desarrollo.md) | Fases, hitos, pruebas y criterios de aceptación |
-| [11 · Costes y servicios](docs/11-costes-servicios.md) | Estimación de servicios recurrentes y costes únicos |
-| [12 · Riesgos y preguntas](docs/12-riesgos-y-preguntas.md) | Riesgos, bloqueos y datos que debe aportar el propietario |
+|---|---|
+| [`ARCHITECTURE.md`](ARCHITECTURE.md) | Stack real, estructura, i18n, datos, auth y decisiones |
+| [`SECURITY.md`](SECURITY.md) | Controles implementados, CSP y pendientes antes de producción |
+| [`DEPLOYMENT.md`](DEPLOYMENT.md) | Entornos, variables, migraciones y despliegue en Vercel |
+| [`docs/00-informe-fase-0.md`](docs/00-informe-fase-0.md) | Resumen ejecutivo de la investigación |
+| [`docs/01-analisis-blogspot.md`](docs/01-analisis-blogspot.md) | Análisis del sitio actual |
+| [`docs/02-analisis-whatsapp.md`](docs/02-analisis-whatsapp.md) | Canal de WhatsApp |
+| [`docs/03-inventario-contenidos.md`](docs/03-inventario-contenidos.md) | 34 entradas y 14 páginas |
+| [`docs/04-arquitectura-tecnica.md`](docs/04-arquitectura-tecnica.md) | Arquitectura propuesta |
+| [`docs/05-modelo-datos.md`](docs/05-modelo-datos.md) | Modelo de datos |
+| [`docs/06-mapa-paginas.md`](docs/06-mapa-paginas.md) | Rutas y slugs |
+| [`docs/07-propuesta-visual.md`](docs/07-propuesta-visual.md) | Identidad y sistema de diseño |
+| [`docs/08-plan-seguridad.md`](docs/08-plan-seguridad.md) | Amenazas, controles y respuesta |
+| [`docs/09-plan-migracion.md`](docs/09-plan-migracion.md) | Migración de Blogger |
+| [`docs/10-plan-desarrollo.md`](docs/10-plan-desarrollo.md) | Fases y criterios de salida |
+| [`docs/11-costes-servicios.md`](docs/11-costes-servicios.md) | Estimación de servicios |
+| [`docs/12-riesgos-y-preguntas.md`](docs/12-riesgos-y-preguntas.md) | Riesgos y datos pendientes |
+| [`docs/13-fase-1-fundacion.md`](docs/13-fase-1-fundacion.md) | Informe de la Fase 1 |
 
-Datos tabulares: [`docs/data/inventario-contenidos.csv`](docs/data/inventario-contenidos.csv)
-y versión legible en [`docs/data/inventario-contenidos.md`](docs/data/inventario-contenidos.md).
+Datos tabulares en [`docs/data/inventario-contenidos.csv`](docs/data/inventario-contenidos.csv) y
+[`docs/data/inventario-contenidos.md`](docs/data/inventario-contenidos.md).
 
-## Fuentes analizadas
+---
 
-- `https://observadorcubano.blogspot.com/` — portada, artículo de muestra, «Nosotros»,
-  edición impresa y *feeds* públicos de entradas y páginas (consultados el 2026-11-02).
-- `https://observadorcubano.blogspot.com/sitemap.xml`.
-- `https://whatsapp.com/channel/0029Vb73VkN7tkj5MlScKL1k` — ficha pública del canal.
+## Seguridad y privacidad
 
-Las limitaciones de cada fuente están documentadas en los informes correspondientes.
-No se ha simulado ninguna comprobación que no se haya podido realizar.
+- Sin cookies de analítica, publicidad ni seguimiento.
+- Sin formularios que recojan datos personales en esta fase.
+- Cabeceras de seguridad activas; CSP en modo informe y pendiente de endurecer.
+- Alta pública de cuentas deshabilitada.
+- La plataforma **no promete anonimato absoluto** de fuentes. Ver [`SECURITY.md`](SECURITY.md).
 
-## Principios del proyecto
+---
 
-- Independencia editorial y control de la infraestructura por parte del medio.
-- Privacidad por defecto y minimización de datos.
-- Seguridad y protección de fuentes desde el diseño.
-- Accesibilidad WCAG 2.2 AA como requisito, no como extra.
-- Rendimiento en conexiones móviles lentas.
-- Multilingüismo real (español/inglés) con revisión humana.
-- Portabilidad: contenido y suscriptores exportables en todo momento.
+## Limitaciones actuales
+
+1. No hay repositorio remoto: falta el token de GitHub o `gh auth login`.
+2. No hay PostgreSQL local ni remoto; la migración no se ha aplicado.
+3. No hay pantallas de login, MFA ni administración de usuarios.
+4. No hay despliegue ni dominio de prueba.
+5. Faltan XML de Blogger, materiales de radio/PDF, autores y equipo editorial.
+6. `npm audit` reporta 8 vulnerabilidades moderadas en la cadena de ESLint; no se aplica
+   `npm audit fix --force`.
+7. Chromium de Playwright no se puede descargar en este equipo (403 por ubicación); se usa Edge.
+
+---
+
+## Siguiente paso
+
+1. Crear el repositorio privado y ejecutar CI.
+2. Crear la base de datos y aplicar la migración.
+3. Completar login, MFA y alta interna de usuarios para cerrar el criterio de la Fase 1.
+4. Desplegar el entorno de prueba en `*.vercel.app`.
+5. Iniciar la Fase 2 con contenido real y taxonomía aprobada.
+
+No se compra dominio, no se contrata ningún servicio y no se publica contenido migrado sin
+autorización expresa.
+
+---
 
 ## Licencia y materiales
 
-El código se alojará en un repositorio privado. Las fotografías, marcas y materiales de
-terceros no se reutilizarán sin autorización expresa. El logotipo tipográfico propuesto en
-la Fase 0 es provisional y original.
+El código se alojará en un repositorio privado. Las fotografías, marcas y materiales de terceros no se
+reutilizan sin autorización. El logotipo tipográfico es provisional y original. Los textos legales son
+borradores y requieren revisión profesional.

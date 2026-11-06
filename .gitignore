@@ -12,6 +12,9 @@ dist/
 # Testing
 coverage/
 .nyc_output/
+playwright-report/
+test-results/
+blob-report/
 
 # Environment
 .env
@@ -19,6 +22,8 @@ coverage/
 .env.development.local
 .env.test.local
 .env.production.local
+.env.*.local
+!.env.example
 
 # Logs
 npm-debug.log*
@@ -37,9 +42,6 @@ lerna-debug.log*
 # OS
 .DS_Store
 Thumbs.db
-
-# Prisma
-prisma/migrations/.migration_lock.toml
 
 # Turbo
 .turbo/
@@ -66,3 +68,4 @@ docs/data/*.csv
 *.db
 *.sqlite
 *.sqlite3
+/src/generated/prisma

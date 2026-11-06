@@ -2,7 +2,9 @@
 
 **Proyecto:** El Observador Cubano — plataforma periodística multilingüe
 **Fecha del informe:** 2 de noviembre de 2026
-**Estado:** Fase 0 completada para revisión. **No se ha iniciado la Fase 1.**
+**Estado:** Fase 0 completada y aprobada. La Fase 1 (fundación) está implementada y verificada en
+local; el despliegue y los flujos con base de datos siguen pendientes. Ver
+[`docs/13-fase-1-fundacion.md`](docs/13-fase-1-fundacion.md).
 
 ---
 

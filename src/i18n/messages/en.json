@@ -1,0 +1,182 @@
+{
+  "metadata": {
+    "siteName": "El Observador Cubano",
+    "tagline": "Journalism from the communities",
+    "description": "Digital newspaper about Cuba and its communities. Investigation, features and analysis with editorial review."
+  },
+  "common": {
+    "skipToContent": "Skip to content",
+    "menu": "Menu",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "search": "Search",
+    "searchPlaceholder": "Search the newspaper",
+    "searchSubmit": "Search",
+    "theme": "Theme",
+    "themeLight": "Switch to light theme",
+    "themeDark": "Switch to dark theme",
+    "language": "Language",
+    "spanish": "Español",
+    "english": "English",
+    "draft": "Draft",
+    "comingSoon": "Coming soon",
+    "backHome": "Back to home",
+    "all": "View all",
+    "section": "Section",
+    "externalLink": "Opens in a new tab"
+  },
+  "nav": {
+    "home": "Home",
+    "latest": "Latest",
+    "more": "More",
+    "radio": "Radio",
+    "print": "Print",
+    "about": "About",
+    "menuTitle": "Sections",
+    "legal": "Legal information",
+    "follow": "Follow"
+  },
+  "sections": {
+    "nacional": {
+      "name": "National",
+      "description": "News from Cuba and its public life, with verification and context."
+    },
+    "internacional": {
+      "name": "International",
+      "description": "What happens outside Cuba and how it affects its communities."
+    },
+    "comunidades": {
+      "name": "Communities",
+      "description": "Stories and voices from the territories, inside and outside the island."
+    },
+    "sociedad": {
+      "name": "Society",
+      "description": "Daily life, rights, health, education and migration."
+    },
+    "economia": {
+      "name": "Economy",
+      "description": "Work, prices, services and household economy."
+    },
+    "politica": {
+      "name": "Politics",
+      "description": "Public decisions, institutions and citizen participation."
+    },
+    "cultura": {
+      "name": "Culture",
+      "description": "Art, music, books and cultural memory."
+    },
+    "opinion": {
+      "name": "Opinion",
+      "description": "Signed analysis and columns, kept separate from news."
+    },
+    "reportajes": {
+      "name": "Features",
+      "description": "Long-form investigations and narratives."
+    },
+    "entrevistas": {
+      "name": "Interviews",
+      "description": "Conversations with people who explain their time."
+    },
+    "comunicados": {
+      "name": "Statements",
+      "description": "Declarations and positions from the publication."
+    }
+  },
+  "home": {
+    "kicker": "Inaugural edition",
+    "leadTitle": "The newsroom is getting ready",
+    "leadBody": "We are preparing the first edition with the standard that will guide the whole newspaper: verify before publishing, attribute every fact and correct in public.",
+    "leadNote": "While there is no verified content, this front page shows no filler stories or sample texts presented as real.",
+    "latestTitle": "Latest",
+    "latestEmpty": "No stories yet. The first verified report will appear here.",
+    "noteEmpty": "The front page will be filled with verified, dated reporting. Sample texts will not be presented as real stories.",
+    "sectionsTitle": "Sections",
+    "sectionsIntro": "The editorial structure is defined. Each section will open when it has content of its own.",
+    "radioTitle": "Radio",
+    "radioBody": "The audio archive will be added when episodes and authorised transcripts exist.",
+    "radioEmpty": "No episodes are available yet.",
+    "printTitle": "Print edition",
+    "printBody": "The digital archive will show every edition with its cover, metadata and download link.",
+    "printEmpty": "No editions are available yet.",
+    "newsletterTitle": "Newsletter",
+    "newsletterBody": "The newsletter will launch once email delivery and double opt-in are configured. No addresses will be collected before that review.",
+    "legalNotice": "Site under development. Legal texts are drafts and require professional review."
+  },
+  "section": {
+    "emptyTitle": "This section has no stories yet",
+    "emptyBody": "When the newsroom publishes verified content in this section, it will appear here with its date, byline and tags.",
+    "pageLabel": "Section"
+  },
+  "search": {
+    "title": "Search",
+    "description": "Search the newspaper's published stories.",
+    "label": "Search term",
+    "placeholder": "Word or phrase",
+    "submit": "Search",
+    "emptyTitle": "Search will be available with the first content",
+    "emptyBody": "The search index will open once there are published, reviewed stories.",
+    "queryLabel": "Results for “{query}”"
+  },
+  "about": {
+    "title": "About the newspaper",
+    "description": "Institutional information about El Observador Cubano.",
+    "introTitle": "An editorial project under construction",
+    "introBody": "El Observador Cubano is being built as a digital home for community journalism: verified information, context and a voice for people inside and outside the island.",
+    "placeholderTitle": "Institutional content pending",
+    "placeholderBody": "This page will hold verified information about the editorial leadership, the team and the publication's mission. No names, titles or biographies will be published until their authorisation is confirmed.",
+    "principlesTitle": "Working principles",
+    "principles": {
+      "accuracy": "Verification first and attribution of sources.",
+      "independence": "News, opinion and advertising kept separate.",
+      "corrections": "Visible, dated corrections.",
+      "privacy": "Data minimisation and source protection."
+    }
+  },
+  "radio": {
+    "title": "Radio",
+    "description": "Audio programmes and episodes from El Observador Cubano.",
+    "emptyTitle": "No audio is available yet",
+    "emptyBody": "Players will be enabled when programmes, episodes and reviewed transcripts exist. No audio will autoplay."
+  },
+  "print": {
+    "title": "Print edition",
+    "description": "Digital archive of print editions.",
+    "emptyTitle": "No editions yet",
+    "emptyBody": "Each future edition will show its number, date, page count, file size and a verified download link."
+  },
+  "privacy": {
+    "title": "Privacy",
+    "description": "Draft privacy policy.",
+    "draftTitle": "Draft for legal review",
+    "draftBody": "This text is a working basis. It must not be treated as a final policy until it has been reviewed by qualified legal counsel and published with an effective date.",
+    "principlesTitle": "Planned criteria",
+    "principles": {
+      "minimal": "We collect only the data required for each purpose.",
+      "analytics": "Planned analytics are aggregate and use no tracking cookies.",
+      "rights": "Channels to access, correct and delete data will be documented.",
+      "retention": "Retention periods will be published with the final policy."
+    },
+    "pending": "The full version will be added before opening subscriber registration or any form that processes personal data."
+  },
+  "footer": {
+    "about": "About",
+    "privacy": "Privacy",
+    "contact": "Contact",
+    "follow": "Follow the channel",
+    "navigation": "Navigation",
+    "institutional": "Institutional",
+    "draftNotice": "Site under development. Legal texts in draft.",
+    "rights": "© {year} El Observador Cubano. All rights reserved.",
+    "builtWith": "Published with Next.js"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or has moved.",
+    "body": "Check the address or return to the front page. If you followed an old link, the matching redirect will be added during migration.",
+    "backHome": "Back to home"
+  },
+  "errors": {
+    "genericTitle": "Something went wrong",
+    "genericBody": "We could not complete the operation. Please try again in a few minutes."
+  }
+}
