@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">El Observador Cubano</string>
+    <string name="title_activity_main">El Observador Cubano</string>
+    <string name="package_name">cu.observadorcubano.app</string>
+    <string name="custom_url_scheme">cu.observadorcubano.app</string>
+
+    <string name="header_title">EL OBSERVADOR CUBANO</string>
+    <string name="header_subtitle">Periodismo desde las comunidades</string>
+
+    <string name="nav_home">Inicio</string>
+    <string name="nav_sections">Secciones</string>
+    <string name="nav_search">Buscar</string>
+    <string name="nav_back">Atrás</string>
+    <string name="nav_refresh">Actualizar</string>
+    <string name="nav_share">Compartir</string>
+    <string name="nav_info">Info</string>
+
+    <string name="welcome_title">Cargando el periódico</string>
+    <string name="welcome_message">Preparando las últimas publicaciones…</string>
+
+    <string name="sections_title">Secciones</string>
+    <string name="sections_subtitle">Explora el periódico por etiquetas, con las secciones reales del sitio.</string>
+    <string name="sections_home">Portada</string>
+    <string name="sections_home_sub">Todas las publicaciones</string>
+    <string name="sections_loading">Actualizando secciones…</string>
+
+    <string name="search_title">Buscar</string>
+    <string name="search_subtitle">Encuentra artículos por palabra clave o elige una sección.</string>
+    <string name="search_hint">Buscar en el periódico</string>
+    <string name="search_action">Buscar</string>
+    <string name="search_empty">Escribe una palabra para buscar.</string>
+    <string name="search_suggestions">Secciones del periódico</string>
+
+    <plurals name="section_article_count">
+        <item quantity="one">%d artículo</item>
+        <item quantity="other">%d artículos</item>
+    </plurals>
+
+    <string name="offline_title">Sin conexión a Internet</string>
+    <string name="offline_message">Comprueba tu conexión y vuelve a intentarlo. Cuando recuperes la conexión, la aplicación continuará automáticamente.</string>
+    <string name="offline_banner_text">Sin conexión a Internet</string>
+
+    <string name="error_title">No se pudo cargar el periódico</string>
+    <string name="error_message">El sitio no respondió. Comprueba tu conexión o inténtalo de nuevo en unos instantes.</string>
+
+    <string name="security_error_title">Conexión no segura</string>
+    <string name="security_error_message">No se pudo verificar el certificado del sitio. Por seguridad, la carga se ha detenido.</string>
+
+    <string name="retry">Reintentar</string>
+    <string name="go_home">Ir a la portada</string>
+    <string name="at_home">Ya estás en la portada.</string>
+    <string name="exit_hint">Pulsa Atrás de nuevo para salir.</string>
+    <string name="unsafe_link">Por seguridad, este enlace no se puede abrir.</string>
+    <string name="no_app">No hay ninguna aplicación disponible para abrir este enlace.</string>
+    <string name="download_unsupported">No se puede abrir esta descarga.</string>
+    <string name="share_chooser">Compartir con</string>
+    <string name="renderer_restart">Reiniciando la vista del periódico…</string>
+
+    <string name="cd_logo">El Observador Cubano</string>
+    <string name="cd_back">Volver</string>
+    <string name="cd_home">Ir a la portada</string>
+    <string name="cd_share">Compartir el artículo actual</string>
+    <string name="cd_offline_icon">Sin conexión</string>
+    <string name="cd_splash">Pantalla de carga de El Observador Cubano</string>
+    <string name="cd_sections">Abrir secciones</string>
+    <string name="cd_search">Buscar en el periódico</string>
+    <string name="cd_close">Cerrar</string>
+
+    <!-- Actualizaciones -->
+    <string name="update_channel_name">Actualizaciones de la app</string>
+    <string name="update_channel_description">Avisos de nuevas versiones estables de El Observador Cubano</string>
+    <string name="update_notification_title">Nueva versión %1$s disponible</string>
+    <string name="update_notification_text">Toca para ver las novedades y actualizar la aplicación.</string>
+    <string name="update_screen_title">Novedades de la app</string>
+    <string name="update_pill">Novedades</string>
+    <string name="update_subtitle">Versión instalada %1$s</string>
+    <string name="update_label_installed">Versión instalada</string>
+    <string name="update_label_latest">Última versión</string>
+    <string name="update_label_published">Publicada</string>
+    <string name="update_version_unknown">—</string>
+    <string name="update_no_notes">Esta versión no incluye una descripción publicada en GitHub.</string>
+    <string name="update_now">Actualizar ahora</string>
+    <string name="update_now_version">Actualizar a la versión %1$s</string>
+    <string name="update_later">Más tarde</string>
+    <string name="update_view_github">Ver en GitHub</string>
+    <string name="update_checking">Comprobando si hay una versión nueva…</string>
+    <string name="update_downloading">Descargando la actualización…</string>
+    <string name="update_downloading_percent">Descargando… %1$d %%</string>
+    <string name="update_verifying">Verificando la descarga…</string>
+    <string name="update_verified">Descarga verificada. Abriendo el instalador de Android…</string>
+    <string name="update_install_cancelled">Instalación cancelada. Puedes intentarlo de nuevo cuando quieras.</string>
+    <string name="update_permission_title">Permiso necesario para instalar</string>
+    <string name="update_permission_message">Para instalar la actualización, permite que El Observador Cubano instale aplicaciones desconocidas. Android mostrará su propia pantalla de confirmación; la instalación nunca es silenciosa.</string>
+    <string name="update_permission_open">Abrir ajustes</string>
+    <string name="update_permission_cancel">Cancelar</string>
+    <string name="update_install_blocked">No se pudo abrir el instalador de Android.</string>
+    <string name="update_up_to_date_title">Tienes la última versión</string>
+    <string name="update_up_to_date_message">La versión %1$s es la más reciente publicada.</string>
+    <string name="update_check_error_title">No se pudo comprobar</string>
+    <string name="update_check_error_message">Revisa la conexión a Internet e inténtalo de nuevo. La aplicación sigue funcionando con normalidad.</string>
+    <string name="update_cached_note">No se pudo comprobar ahora mismo; se muestra la última información guardada.</string>
+    <string name="update_retry">Volver a comprobar</string>
+    <string name="update_history_title">Historial de versiones</string>
+    <string name="update_history_subtitle">Versiones estables publicadas en GitHub Releases.</string>
+    <string name="update_history_empty">Todavía no hay versiones publicadas.</string>
+    <string name="update_history_error">No se pudo cargar el historial de versiones.</string>
+    <string name="update_footer">Las actualizaciones se descargan del repositorio oficial en GitHub. Antes de instalar se comprueban el SHA-256, el paquete, la versión y la firma digital. Si algo no coincide, la descarga se descarta.</string>
+    <string name="update_banner_text">Nueva versión %1$s disponible</string>
+    <string name="update_banner_action">Ver</string>
+    <string name="update_banner_dismiss">Descartar aviso</string>
+    <string name="update_notes_title">Novedades de la versión %1$s</string>
+    <string name="update_no_update_title">No hay una actualización disponible</string>
+    <string name="update_no_update_message">La última publicación estable no incluye un APK instalable o no es más reciente que la versión instalada.</string>
+    <string name="cd_update_logo">Logotipo de El Observador Cubano</string>
+    <string name="update_error_not_configured">El repositorio de actualizaciones no está configurado en esta compilación.</string>
+    <string name="update_error_missing_apk">La versión publicada no incluye un APK instalable.</string>
+    <string name="update_error_not_newer">La versión publicada no es más reciente que la instalada.</string>
+    <string name="update_error_checksum_file">El archivo SHA-256 de la Release no es válido.</string>
+    <string name="update_error_empty">El APK descargado está vacío.</string>
+    <string name="update_error_too_large">El APK publicado supera el tamaño máximo permitido.</string>
+    <string name="update_error_missing_checksum">La Release no publica el SHA-256 del APK; por seguridad no se instala.</string>
+    <string name="update_error_checksum_mismatch">La descarga no coincide con el SHA-256 publicado. Se ha descartado.</string>
+    <string name="update_error_wrong_package">El APK descargado no corresponde a esta aplicación.</string>
+    <string name="update_error_downgrade">La actualización no es más reciente; no se permiten versiones anteriores.</string>
+    <string name="update_error_version_mismatch">La versión del APK no coincide con la versión de la Release.</string>
+    <string name="update_error_signature">La firma del APK no coincide con la aplicación instalada. Por seguridad se ha cancelado.</string>
+    <string name="update_error_generic">No se pudo preparar la actualización.</string>
+    <string name="update_error_network">No se pudo comprobar si hay una versión nueva. Revisa la conexión.</string>
+</resources>

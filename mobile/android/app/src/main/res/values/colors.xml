@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Identidad oficial -->
+    <color name="brand_blue">#0567EE</color>
+    <color name="brand_blue_dark">#0649A8</color>
+    <color name="brand_blue_soft">#EAF2FF</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Superficies y texto -->
+    <color name="surface">#FFFFFF</color>
+    <color name="background">#F4F6F9</color>
+    <color name="border">#E3E8F0</color>
+    <color name="text_primary">#17202B</color>
+    <color name="text_secondary">#5B6675</color>
+    <color name="text_tertiary">#8A94A3</color>
+
+    <!-- Navegación -->
+    <color name="nav_icon">#6B7686</color>
+    <color name="nav_icon_selected">#0567EE</color>
+    <color name="header_subtitle">#D6E6FF</color>
+
+    <!-- Estados -->
+    <color name="offline_bg">#EAF2FF</color>
+    <color name="offline_text">#0649A8</color>
+    <color name="offline_border">#CFE0FF</color>
+    <color name="error_text">#B3261E</color>
+    <color name="progress_track">#33FFFFFF</color>
+
+    <!-- Interacción -->
+    <color name="ripple_light">#1F0567EE</color>
+    <color name="ripple_white">#33FFFFFF</color>
+
+    <!-- Splash e iconos -->
+    <color name="ic_launcher_background">#0667EE</color>
+    <color name="splash_system_background">#0649A8</color>
+</resources>

@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#0567ee" />
+    <title>El Observador Cubano</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="appbar">
+        <button id="btn-close" class="appbar__back" type="button" aria-label="Volver al periódico">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+            <path
+              d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+        <img
+          class="appbar__wordmark"
+          src="./logo-wordmark.png"
+          alt="El Observador Cubano"
+          height="40"
+        />
+        <span class="appbar__pill">Info</span>
+      </header>
+
+      <main class="content">
+        <section class="hero" aria-labelledby="hero-title">
+          <img
+            class="hero__logo"
+            src="./logo.png"
+            alt="Logotipo de El Observador Cubano"
+            width="88"
+            height="88"
+          />
+          <div class="hero__body">
+            <h1 id="hero-title" class="hero__title">El Observador Cubano</h1>
+            <p class="hero__tagline">Periodismo desde las comunidades</p>
+            <p class="hero__meta">
+              <span id="version-badge" class="badge">Versión —</span>
+              <span class="badge badge--ghost">Android</span>
+            </p>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="about-title">
+          <h2 id="about-title" class="card__title">Acerca de la aplicación</h2>
+          <p class="card__text">
+            Esta aplicación muestra el sitio oficial de <strong>El Observador Cubano</strong> alojado en
+            Blogger. El contenido, las imágenes y las actualizaciones provienen directamente del
+            periódico: la app no copia ni reconstruye las publicaciones.
+          </p>
+          <p class="card__text">
+            Navega por artículos, comparte notas y vuelve a la portada en cualquier momento. Cuando el
+            dispositivo recupera la conexión, la aplicación retoma la navegación automáticamente.
+          </p>
+          <p class="card__text">
+            <strong>Nota sobre las imágenes:</strong> en algunas redes (por ejemplo, dentro de Cuba sin
+            VPN) las imágenes alojadas por Google pueden no cargarse. El texto, la navegación y las
+            demás funciones de la aplicación siguen funcionando con normalidad.
+          </p>
+          <dl class="facts">
+            <div class="facts__row">
+              <dt>Paquete</dt>
+              <dd id="package-name">—</dd>
+            </div>
+            <div class="facts__row">
+              <dt>Compilación</dt>
+              <dd id="build-number">—</dd>
+            </div>
+            <div class="facts__row">
+              <dt>Plataforma</dt>
+              <dd id="platform-name">—</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="card" aria-labelledby="settings-title">
+          <h2 id="settings-title" class="card__title">Configuración</h2>
+
+          <fieldset class="field">
+            <legend class="field__label">Enlaces a otros sitios</legend>
+            <p class="field__help">
+              WhatsApp, Telegram, correo, redes sociales y demás enlaces externos se abren fuera del
+              periódico.
+            </p>
+            <div class="choices" role="radiogroup" aria-label="Cómo abrir enlaces externos">
+              <label class="choice">
+                <input type="radio" name="externalLinkMode" value="system" />
+                <span class="choice__body">
+                  <span class="choice__title">Navegador del sistema</span>
+                  <span class="choice__desc">Se abre la app o el navegador predeterminado del teléfono.</span>
+                </span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="externalLinkMode" value="inapp" />
+                <span class="choice__body">
+                  <span class="choice__title">Navegador integrado</span>
+                  <span class="choice__desc">Se abre una pestaña segura sin salir de la aplicación.</span>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="field">
+            <label class="field__label" for="text-zoom">Tamaño del texto del periódico</label>
+            <p class="field__help">Ajusta el zoom del contenido sin modificar el sitio original.</p>
+            <div class="range">
+              <input id="text-zoom" type="range" min="80" max="140" step="5" value="100" />
+              <output id="text-zoom-value" class="range__value" for="text-zoom">100 %</output>
+            </div>
+            <p id="text-preview" class="preview" aria-hidden="true">
+              Así se verá el texto de las noticias.
+            </p>
+          </div>
+
+          <button id="btn-reset" class="btn btn--ghost" type="button">
+            Restablecer configuración
+          </button>
+        </section>
+
+        <section class="card" aria-labelledby="updates-title">
+          <h2 id="updates-title" class="card__title">Actualizaciones</h2>
+          <p class="card__text">
+            La aplicación consulta las versiones estables publicadas en GitHub Releases. Antes de
+            instalar una actualización comprueba el SHA-256, el paquete, la versión y la firma
+            digital; si algo no coincide, la descarga se descarta.
+          </p>
+          <div class="btn-row">
+            <button id="btn-check-updates" class="btn btn--primary" type="button">
+              Buscar actualizaciones
+            </button>
+            <button id="btn-history" class="btn btn--ghost" type="button">
+              Historial de versiones
+            </button>
+          </div>
+          <p class="field__help">
+            La instalación siempre la confirma Android. No se instala nada en segundo plano.
+          </p>
+        </section>
+
+        <section class="card" aria-labelledby="notifications-title">
+          <h2 id="notifications-title" class="card__title">Notificaciones</h2>
+          <p class="status status--ok"><span class="status__dot" aria-hidden="true"></span> Avisos de actualizaciones</p>
+          <p class="card__text">
+            Cuando se publica una versión estable más reciente, la app puede avisarte una sola vez.
+            Puedes posponerla con «Más tarde» y no volverá a avisar para esa misma versión. En
+            Android 13 o superior el permiso de notificaciones se solicita solo cuando hay una
+            actualización disponible.
+          </p>
+          <p class="card__text card__text--muted">
+            Las notificaciones push de artículos nuevos son un canal distinto y requieren un
+            proyecto de Firebase y un servidor de envío; no se muestran avisos simulados.
+          </p>
+        </section>
+
+        <section class="card" aria-labelledby="links-title">
+          <h2 id="links-title" class="card__title">Enlaces oficiales</h2>
+          <div class="links">
+            <button class="link-row" type="button" data-url="https://observadorcubano.blogspot.com/">
+              <span class="link-row__label">Visitar el periódico</span>
+              <span class="link-row__chevron" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18">
+                  <path d="M10 6 8.6 7.4 13.2 12l-4.6 4.6L10 18l6-6z" fill="currentColor" />
+                </svg>
+              </span>
+            </button>
+            <button class="link-row" type="button" data-url="https://observadorcubano.blogspot.com/p/nosotros_0330024314.html">
+              <span class="link-row__label">Nosotros</span>
+              <span class="link-row__chevron" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18">
+                  <path d="M10 6 8.6 7.4 13.2 12l-4.6 4.6L10 18l6-6z" fill="currentColor" />
+                </svg>
+              </span>
+            </button>
+            <button class="link-row" type="button" data-url="https://observadorcubano.blogspot.com/p/papelografo.html">
+              <span class="link-row__label">Papelógrafo (edición impresa)</span>
+              <span class="link-row__chevron" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18">
+                  <path d="M10 6 8.6 7.4 13.2 12l-4.6 4.6L10 18l6-6z" fill="currentColor" />
+                </svg>
+              </span>
+            </button>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="privacy-title">
+          <h2 id="privacy-title" class="card__title">Privacidad</h2>
+          <p class="card__text">
+            La aplicación no recopila datos personales, no crea cuentas y no solicita permisos
+            innecesarios. Solo se conecta a Internet para mostrar el periódico. Tus preferencias se
+            guardan únicamente en este dispositivo y puedes restablecerlas cuando quieras.
+          </p>
+          <p class="card__text card__text--muted">
+            Al abrir enlaces externos se aplican las políticas de privacidad del sitio correspondiente.
+            El periódico y Blogger pueden usar cookies propias para el funcionamiento del sitio.
+          </p>
+        </section>
+
+        <footer class="footer">
+          <img class="footer__wordmark" src="./logo-wordmark.png" alt="" width="120" height="59" />
+          <p>© 2026 El Observador Cubano</p>
+          <p>Hecho para lectores en Cuba y el mundo.</p>
+        </footer>
+      </main>
+
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

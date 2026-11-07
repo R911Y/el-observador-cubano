@@ -11,6 +11,36 @@ con verificación editorial, privacidad por defecto y protección de fuentes.
 
 ---
 
+## Aplicación Android
+
+La app oficial (`cu.observadorcubano.app`) vive en [`mobile/`](mobile/) y se
+compila sin Android Studio con Gradle. La versión actual es **1.1.0**
+(`versionCode 2`).
+
+- Interfaz nativa + WebView del periódico, búsqueda, secciones, Info y
+  adaptación a orientación vertical/apaisada.
+- Actualizaciones in-app desde GitHub Releases: SHA-256, paquete, versión y
+  firma verificados antes de abrir el instalador de Android.
+- CI y publicación firmada con GitHub Actions; instrucciones completas en
+  [`docs/GITHUB.md`](docs/GITHUB.md) y
+  [`docs/ACTUALIZACIONES.md`](docs/ACTUALIZACIONES.md).
+
+```bash
+cd mobile
+npm ci
+npm run build
+npx cap sync android
+cd android
+./gradlew :app:testDebugUnitTest :app:assembleDebug
+```
+
+La APK queda en `mobile/android/app/build/outputs/apk/debug/app-debug.apk`.
+Para publicar una versión: `npm run version:bump minor`, commit, etiqueta
+`vX.Y.Z` y push de la etiqueta. El flujo de release firma y adjunta el APK y su
+SHA-256.
+
+---
+
 ## Qué funciona hoy
 
 - Next.js 16 con App Router, React 19, TypeScript estricto y Tailwind 4.

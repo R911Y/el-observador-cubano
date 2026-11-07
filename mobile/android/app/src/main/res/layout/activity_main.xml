@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/surface"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/appRoot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_appbar"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/appBarRow"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp">
+
+                <ImageButton
+                    android:id="@+id/btnBack"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/cd_back"
+                    android:padding="13dp"
+                    android:src="@drawable/ic_back"
+                    android:visibility="gone"
+                    app:tint="@color/white" />
+
+                <ImageView
+                    android:id="@+id/logoWordmark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="46dp"
+                    android:layout_marginStart="4dp"
+                    android:adjustViewBounds="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/cd_home"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/logo_wordmark" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <ImageButton
+                    android:id="@+id/btnShareTop"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/cd_share"
+                    android:padding="13dp"
+                    android:src="@drawable/ic_share"
+                    app:tint="@color/white" />
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:indeterminate="false"
+                android:max="100"
+                android:progress="0"
+                android:progressBackgroundTint="@color/progress_track"
+                android:progressTint="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/offlineBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_offline_banner"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingTop="7dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="7dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="19dp"
+                android:layout_height="19dp"
+                android:contentDescription="@string/cd_offline_icon"
+                android:src="@drawable/ic_cloud_off"
+                app:tint="@color/offline_text" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="9dp"
+                android:layout_weight="1"
+                android:text="@string/offline_banner_text"
+                android:textColor="@color/offline_text"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/bannerRetry"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:minWidth="0dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="@string/retry"
+                android:textAllCaps="false"
+                android:textColor="@color/brand_blue_dark"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Aviso de actualización disponible -->
+        <LinearLayout
+            android:id="@+id/updateBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_offline_banner"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingTop="6dp"
+            android:paddingEnd="4dp"
+            android:paddingBottom="6dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_notify_update"
+                app:tint="@color/brand_blue_dark" />
+
+            <TextView
+                android:id="@+id/updateBannerText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="9dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/offline_text"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/updateBannerAction"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:minWidth="0dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="@string/update_banner_action"
+                android:textAllCaps="false"
+                android:textColor="@color/brand_blue_dark"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/updateBannerClose"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/update_banner_dismiss"
+                android:padding="11dp"
+                android:src="@drawable/ic_close"
+                app:tint="@color/offline_text" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/contentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefresh"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <WebView
+                    android:id="@+id/webView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            <include
+                android:id="@+id/stateOverlay"
+                layout="@layout/view_state" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/bottomBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:elevation="12dp"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/border" />
+
+            <LinearLayout
+                android:id="@+id/bottomBarRow"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/navHome"
+                    style="@style/Widget.EOC.NavItem">
+
+                    <ImageView
+                        style="@style/Widget.EOC.NavIcon"
+                        android:contentDescription="@string/cd_home"
+                        android:src="@drawable/ic_home" />
+
+                    <TextView
+                        style="@style/Widget.EOC.NavLabel"
+                        android:text="@string/nav_home" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/navSections"
+                    style="@style/Widget.EOC.NavItem">
+
+                    <ImageView
+                        style="@style/Widget.EOC.NavIcon"
+                        android:contentDescription="@string/cd_sections"
+                        android:src="@drawable/ic_sections" />
+
+                    <TextView
+                        style="@style/Widget.EOC.NavLabel"
+                        android:text="@string/nav_sections" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/navSearch"
+                    style="@style/Widget.EOC.NavItem">
+
+                    <ImageView
+                        style="@style/Widget.EOC.NavIcon"
+                        android:contentDescription="@string/cd_search"
+                        android:src="@drawable/ic_search" />
+
+                    <TextView
+                        style="@style/Widget.EOC.NavLabel"
+                        android:text="@string/nav_search" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/navInfo"
+                    style="@style/Widget.EOC.NavItem">
+
+                    <ImageView
+                        style="@style/Widget.EOC.NavIcon"
+                        android:contentDescription="@string/nav_info"
+                        android:src="@drawable/ic_info" />
+
+                    <TextView
+                        style="@style/Widget.EOC.NavLabel"
+                        android:text="@string/nav_info" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/splashOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/splash_system_background"
+        android:clickable="true"
+        android:contentDescription="@string/cd_splash"
+        android:focusable="true">
+
+        <ImageView
+            android:id="@+id/splashImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/cd_splash"
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop"
+            android:src="@drawable/splash_bg" />
+
+        <ProgressBar
+            android:id="@+id/splashProgress"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="88dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/white" />
+    </FrameLayout>
+</FrameLayout>

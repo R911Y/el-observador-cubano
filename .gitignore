@@ -69,3 +69,31 @@ docs/data/*.csv
 *.sqlite
 *.sqlite3
 /src/generated/prisma
+
+# El Observador Cubano - aplicación Android
+mobile/backup/
+mobile/native-staging/
+mobile/assets-generated/
+mobile/android/.gradle/
+mobile/android/build/
+mobile/android/app/build/
+mobile/android/local.properties
+mobile/android/app/src/main/assets/public/
+mobile/android/app/src/main/assets/capacitor.config.json
+mobile/android/app/src/main/assets/capacitor.plugins.json
+mobile/android/keystore.properties
+mobile/android/keystore.jks
+mobile/dist/
+
+# Claves de firma (nunca se suben)
+*.jks
+*.keystore
+*.p12
+*.pem
+*.key
+
+# Herramientas de agentes y configuración local
+.agents/
+.claude/
+.windsurf/
+skills-lock.json

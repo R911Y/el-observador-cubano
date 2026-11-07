@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/stateOverlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="28dp"
+    android:visibility="gone">
+
+    <FrameLayout
+        android:layout_width="92dp"
+        android:layout_height="92dp"
+        android:background="@drawable/bg_state_icon">
+
+        <ImageView
+            android:id="@+id/stateIcon"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_error"
+            app:tint="@color/text_secondary" />
+
+        <ProgressBar
+            android:id="@+id/stateProgress"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/brand_blue"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/stateTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="@string/welcome_title"
+        android:textColor="@color/text_primary"
+        android:textSize="21sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/stateMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:lineSpacingExtra="3dp"
+        android:maxWidth="320dp"
+        android:text="@string/welcome_message"
+        android:textColor="@color/text_secondary"
+        android:textSize="14.5sp" />
+
+    <Button
+        android:id="@+id/stateRetry"
+        style="@style/Widget.EOC.ButtonPrimary"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="24dp"
+        android:minWidth="180dp"
+        android:paddingStart="28dp"
+        android:paddingEnd="28dp"
+        android:text="@string/retry"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/stateHome"
+        style="@style/Widget.EOC.ButtonText"
+        android:layout_marginTop="4dp"
+        android:text="@string/go_home"
+        android:visibility="gone" />
+</LinearLayout>

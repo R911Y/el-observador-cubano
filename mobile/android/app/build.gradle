@@ -1,0 +1,112 @@
+apply plugin: 'com.android.application'
+
+def keystorePropertiesFile = rootProject.file('keystore.properties')
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+def versionPropertiesFile = rootProject.file('version.properties')
+def versionProperties = new Properties()
+if (!versionPropertiesFile.exists()) {
+    throw new GradleException('Falta android/version.properties con versionName y versionCode')
+}
+versionProperties.load(new FileInputStream(versionPropertiesFile))
+def eocVersionName = versionProperties.getProperty('versionName', '').trim()
+def eocVersionCode = versionProperties.getProperty('versionCode', '').trim()
+if (!(eocVersionName ==~ /^\d+\.\d+\.\d+$/)) {
+    throw new GradleException("versionName inválido en version.properties: ${eocVersionName}")
+}
+if (!(eocVersionCode ==~ /^\d+$/) || eocVersionCode.toInteger() < 1) {
+    throw new GradleException("versionCode inválido en version.properties: ${eocVersionCode}")
+}
+
+// Repositorio público del que se leen las Releases estables.
+def eocGithubOwner = (project.findProperty('eocGithubOwner') ?: 'PENDIENTE').toString().trim()
+def eocGithubRepo = (project.findProperty('eocGithubRepo') ?: 'el-observador-cubano').toString().trim()
+
+android {
+    namespace = "cu.observadorcubano.app"
+    compileSdk = rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        applicationId "cu.observadorcubano.app"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode eocVersionCode.toInteger()
+        versionName eocVersionName
+
+        buildConfigField "String", "GITHUB_OWNER", "\"${eocGithubOwner}\""
+        buildConfigField "String", "GITHUB_REPO", "\"${eocGithubRepo}\""
+        buildConfigField "String", "UPDATE_CHANNEL", "\"stable\""
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    signingConfigs {
+        release {
+            if (keystorePropertiesFile.exists()) {
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (keystorePropertiesFile.exists()) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation "androidx.browser:browser:1.8.0"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    implementation project(':capacitor-android')
+    testImplementation "junit:junit:$junitVersion"
+    // org.json real para las pruebas JVM (android.jar solo contiene stubs).
+    testImplementation "org.json:json:20240303"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}
