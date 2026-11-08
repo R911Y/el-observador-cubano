@@ -52,6 +52,7 @@ public class UpdateActivity extends AppCompatActivity {
     private TextView notesView;
     private TextView errorView;
     private Button updateButton;
+    private TextView playProtectHint;
     private View downloadBox;
     private ProgressBar downloadProgress;
     private TextView downloadStatus;
@@ -144,6 +145,7 @@ public class UpdateActivity extends AppCompatActivity {
         notesView = findViewById(R.id.updateNotes);
         errorView = findViewById(R.id.updateError);
         updateButton = findViewById(R.id.btnUpdate);
+        playProtectHint = findViewById(R.id.updatePlayProtectHint);
         downloadBox = findViewById(R.id.downloadBox);
         downloadProgress = findViewById(R.id.downloadProgress);
         downloadStatus = findViewById(R.id.downloadStatus);
@@ -214,6 +216,8 @@ public class UpdateActivity extends AppCompatActivity {
             updateButton.setText(getString(R.string.update_now_version, release.getVersion()));
             updateButton.setEnabled(!downloading);
             updateButton.setVisibility(View.VISIBLE);
+            playProtectHint.setVisibility(View.VISIBLE);
+            laterButton.setVisibility(View.VISIBLE);
             emptyState.setVisibility(View.GONE);
             githubButton.setVisibility(
                 release.getHtmlUrl().isEmpty() ? View.GONE : View.VISIBLE
@@ -227,6 +231,8 @@ public class UpdateActivity extends AppCompatActivity {
             notesHeader.setVisibility(View.GONE);
             notesView.setVisibility(View.GONE);
             updateButton.setVisibility(View.GONE);
+            playProtectHint.setVisibility(View.GONE);
+            laterButton.setVisibility(View.GONE);
             downloadBox.setVisibility(View.GONE);
             githubButton.setVisibility(
                 release.getHtmlUrl().isEmpty() ? View.GONE : View.VISIBLE
@@ -250,6 +256,8 @@ public class UpdateActivity extends AppCompatActivity {
         notesHeader.setVisibility(View.GONE);
         notesView.setVisibility(View.GONE);
         updateButton.setVisibility(View.GONE);
+        playProtectHint.setVisibility(View.GONE);
+        laterButton.setVisibility(View.GONE);
         downloadBox.setVisibility(View.GONE);
         emptyState.setVisibility(View.VISIBLE);
         emptyTitle.setText(R.string.update_check_error_title);

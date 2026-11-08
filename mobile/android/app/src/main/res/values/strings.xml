@@ -89,6 +89,7 @@
     <string name="update_downloading_percent">Descargando… %1$d %%</string>
     <string name="update_verifying">Verificando la descarga…</string>
     <string name="update_verified">Descarga verificada. Abriendo el instalador de Android…</string>
+    <string name="update_play_protect_hint">Si Play Protect advierte que la app no es segura, elige «Instalar de todas formas». El archivo ya se comprobó con el SHA-256 y la firma de esta aplicación.</string>
     <string name="update_install_cancelled">Instalación cancelada. Puedes intentarlo de nuevo cuando quieras.</string>
     <string name="update_permission_title">Permiso necesario para instalar</string>
     <string name="update_permission_message">Para instalar la actualización, permite que El Observador Cubano instale aplicaciones desconocidas. Android mostrará su propia pantalla de confirmación; la instalación nunca es silenciosa.</string>

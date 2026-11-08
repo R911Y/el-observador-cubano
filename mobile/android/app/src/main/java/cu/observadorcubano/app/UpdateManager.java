@@ -11,8 +11,16 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.net.ConnectException;
+import java.net.NoRouteToHostException;
+import java.net.PortUnreachableException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javax.net.ssl.SSLException;
 
 /**
  * Coordina la comprobación, descarga y verificación de actualizaciones.
@@ -278,11 +286,29 @@ final class UpdateManager {
     }
 
     private String friendlyError(Exception error) {
+        if (isNetworkFailure(error)) {
+            return activity.getString(R.string.update_error_network);
+        }
         String message = error.getMessage();
         if (message == null || message.trim().isEmpty()) {
             return activity.getString(R.string.update_error_network);
         }
         return message;
+    }
+
+    /**
+     * Distingue fallos de red de los mensajes propios de la aplicación.
+     * Android devuelve estos errores en inglés; nunca se muestran tal cual.
+     */
+    static boolean isNetworkFailure(Throwable error) {
+        return error instanceof UnknownHostException
+            || error instanceof SocketTimeoutException
+            || error instanceof ConnectException
+            || error instanceof NoRouteToHostException
+            || error instanceof PortUnreachableException
+            || error instanceof SocketException
+            || error instanceof SSLException
+            || error instanceof InterruptedIOException;
     }
 
     private static String hashFile(File file) throws IOException {
