@@ -4,8 +4,8 @@ Este documento describe cómo se versiona, prueba, firma y publica El Observador
 Cubano. El repositorio oficial es GitHub; la aplicación Android se distribuye
 como APK firmada desde **GitHub Releases**.
 
-> Sustituye `OWNER` por la cuenta u organización de GitHub cuando el repositorio
-> ya esté creado. La URL final se documenta en el README.
+> **Repositorio:** https://github.com/R911Y/el-observador-cubano
+> **Descargas:** https://github.com/R911Y/el-observador-cubano/releases
 
 ## 1. Estructura del repositorio
 
@@ -109,11 +109,11 @@ como archivo normal.** Para cargarla como secreto sin imprimir su contenido:
 ```powershell
 $bytes = [IO.File]::ReadAllBytes("C:\Users\Ronny\.observadorcubano\NOMBRE.jks")
 $b64 = [Convert]::ToBase64String($bytes)
-$b64 | gh secret set ANDROID_KEYSTORE_BASE64 --repo OWNER/REPO
+$b64 | gh secret set ANDROID_KEYSTORE_BASE64 --repo R911Y/el-observador-cubano
 Remove-Variable bytes, b64
 ```
 
-Los demás secretos se escriben con `gh secret set NOMBRE --repo OWNER/REPO`
+Los demás secretos se escriben con `gh secret set NOMBRE --repo R911Y/el-observador-cubano`
 (la terminal los pide de forma interactiva). Nunca se envían por chat ni se
 incluyen en la APK.
 
@@ -154,8 +154,8 @@ El flujo tarda varios minutos. Al terminar, en **Releases** debe existir
 ## 7. Verificar una Release
 
 ```powershell
-gh release view v1.2.0 --repo OWNER/REPO
-gh release download v1.2.0 --repo OWNER/REPO
+gh release view v1.2.0 --repo R911Y/el-observador-cubano
+gh release download v1.2.0 --repo R911Y/el-observador-cubano
 Get-FileHash .\ElObservadorCubano-v1.2.0.apk -Algorithm SHA256
 Get-Content .\ElObservadorCubano-v1.2.0.apk.sha256
 ```
