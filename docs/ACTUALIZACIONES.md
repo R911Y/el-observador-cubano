@@ -104,22 +104,37 @@ comprobado en dispositivo y lo que requiere una Release real publicada.
 
 | # | Escenario | Cómo se comprueba | Estado |
 | --- | --- | --- | --- |
-| 1 | Sin actualización: instalada = última | `UpdatePolicy`/`SemVer` y pantalla «Tienes la última versión» | Automatizado |
-| 2 | Actualización disponible: aviso y notificación una sola vez | `UpdatePolicy.shouldNotify` + aviso en cabecera | Automatizado (lógica) |
-| 3 | Preestreno ignorado | `ReleaseInfo` descarta `prerelease` y `SemVer` rechaza sufijos | Automatizado |
-| 4 | Caché de 6 h y reintento de 15 min | `UpdatePolicyTest` | Automatizado |
-| 5 | Sin conexión: error controlado sin bloquear | `UpdateManager` conserva caché; pantalla muestra aviso | Automatizado (lógica) / pendiente dispositivo |
-| 6 | Notas reales de la Release, sin inventar | `ReleaseInfo.cleanNotes` + pantalla | Automatizado |
-| 7 | Descarga con progreso y SHA-256 correcto | `UpdateManager` + descarga real | Pendiente Release real |
-| 8 | SHA-256 incorrecto: se rechaza | `UpdateVerifierTest` (CHECKSUM_MISMATCH) | Automatizado |
-| 9 | Paquete equivocado o downgrade: se rechaza | `UpdateVerifierTest` | Automatizado |
-| 10 | Firma distinta: se rechaza | `UpdateVerifierTest` + `ApkVerifier` | Automatizado (lógica) / pendiente dispositivo |
-| 11 | Instalador de Android con autorización y app actualizada | Instalación real v1.0.0 → v1.1.0 | Pendiente Release real |
-| 12 | Historial real de versiones y «Más tarde» | `UpdateClient.fetchHistory` + `UpdateStore` | Pendiente Release real |
+| 1 | Sin actualización: instalada = última | `UpdatePolicy`/`SemVer` y pantalla «Tienes la última versión» | **Aprobado**: 5 pruebas automáticas + pantalla real en 1.1.0 y 1.1.1 |
+| 2 | Actualización disponible: aviso y notificación una sola vez | `UpdatePolicy.shouldNotify` + aviso en cabecera | **Aprobado**: aviso y notificación `eoc_updates` observados en dispositivo; aviso único por versión cubierto por pruebas |
+| 3 | Preestreno ignorado | `ReleaseInfo` descarta `prerelease` y `SemVer` rechaza sufijos | **Aprobado** (automatizado) |
+| 4 | Caché de 6 h y reintento de 15 min | `UpdatePolicyTest` | **Aprobado** (automatizado) |
+| 5 | Sin conexión: error controlado sin bloquear | `UpdateManager` conserva caché; pantalla muestra aviso | **Aprobado en dispositivo** (modo avión) tras corregir en 1.1.1 el mensaje técnico en inglés |
+| 6 | Notas reales de la Release, sin inventar | `ReleaseInfo.cleanNotes` + pantalla | **Aprobado**: notas reales de v1.1.0 y v1.1.1 mostradas en dispositivo |
+| 7 | Descarga con progreso y SHA-256 correcto | `UpdateManager` + descarga real | **Aprobado**: progreso visible y «Descarga verificada» en descargas reales de v1.1.0 y v1.1.1 |
+| 8 | SHA-256 incorrecto: se rechaza | `UpdateVerifierTest` (CHECKSUM_MISMATCH) | **Aprobado** (automatizado) |
+| 9 | Paquete equivocado o downgrade: se rechaza | `UpdateVerifierTest` | **Aprobado** (automatizado) |
+| 10 | Firma distinta: se rechaza | `UpdateVerifierTest` + `ApkVerifier` | **Aprobado** (lógica automatizada). No se publicó una Release con firma distinta para no distribuir un APK inválido |
+| 11 | Instalador de Android con autorización y app actualizada | Instalación real v1.0.0 → v1.1.0 y v1.0.0 → v1.1.1 | **Aprobado en dispositivo**: instalador del sistema, confirmación y `versionName`/`versionCode` actualizados |
+| 12 | Historial real de versiones y «Más tarde» | `UpdateClient.fetchHistory` + `UpdateStore` | **Aprobado en dispositivo**: historial con 1.1.1 y 1.1.0; «Más tarde» oculta el aviso y sigue oculto tras reiniciar |
 
-Las pruebas 7, 11 y 12 requieren que el repositorio exista y tenga al menos una
-Release con APK firmado. No se marcan como aprobadas hasta ejecutarlas en el
-dispositivo `R58RA2CXZGR` (Samsung SM-A125U, Android 12).
+Pruebas unitarias: **43 en verde** (7 clases, incluidas las nuevas
+`UpdateManagerTest`). Las pruebas manuales se ejecutaron en el dispositivo
+`R58RA2CXZGR` (Samsung SM-A125U, Android 12) contra las Releases reales
+`v1.1.0` y `v1.1.1`.
+
+### Google Play Protect
+
+Google Play Protect puede marcar la app como «dañina» al instalar una versión
+descargada fuera de Play, porque la aplicación puede instalar sus propias
+actualizaciones. En la prueba real apareció «Se bloqueó la app dañina» y fue
+necesario pulsar **Más detalles → Instalar de todas formas**. Esto no significa
+que falle la verificación de la app: el SHA-256, el paquete y la firma ya se
+comprobaron antes de abrir el instalador.
+
+Desde 1.1.1 la pantalla Novedades muestra ese aviso antes de actualizar. Play
+Protect también puede bloquear instalaciones por ADB; para usuarios finales la
+vía prevista es el actualizador interno y, si aparece el aviso, «Instalar de
+todas formas».
 
 ## 5. Pruebas manuales en dispositivo
 

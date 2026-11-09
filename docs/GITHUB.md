@@ -174,7 +174,8 @@ además valida paquete, versión y firma.
 | Firma incorrecta | La app rechaza la instalación con «La firma del APK no coincide». Revisar secretos y volver a compilar. Nunca cambiar de keystore. |
 | SHA-256 no coincide | El activo está corrupto o fue sustituido. Volver a subir el APK y regenerar el `.sha256`. La app descarta la descarga. |
 | GitHub limita las consultas | La app reintenta en 15 minutos y conserva la última Release conocida. No hay que hacer nada. |
-| Sin conexión | La app sigue funcionando; el actualizador falla en silencio salvo que se abra Novedades manualmente. |
+| Sin conexión | La app sigue funcionando; el actualizador muestra «No se pudo comprobar si hay una versión nueva. Revisa la conexión» al abrir Novedades. |
+| Play Protect bloquea la instalación | La app se distribuye fuera de Play y puede instalar sus propias actualizaciones, por lo que Play Protect puede marcarla. Elegir «Más detalles → Instalar de todas formas»; el SHA-256 y la firma ya se verificaron. |
 
 ## 9. Protecciones recomendadas del repositorio
 
